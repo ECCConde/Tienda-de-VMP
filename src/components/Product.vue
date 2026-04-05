@@ -40,7 +40,7 @@ export default {
 
 <style scoped>
 .product-image {
-  max-width: 30%00px; 
+  max-width: 300px; 
   height: auto; 
 }
 .product-card {
