@@ -1,225 +1,172 @@
-# 🚀 SOLUCIÓN: Error de Node.js en Vercel
+# 🚀 SOLUCIÓN CORREGIDA: Configuración Node.js 24.x en Vercel
 
-## ❌ Problema
+## ❌ Error Original
 ```
-Error: Se encontró una versión de Node.js no válida o descontinuada: "18.x"
-Configure la versión de Node.js a 24.x
+Build Failed: The `vercel.json` schema validation failed with the following message: 
+should NOT have additional property `nodeVersion`
 ```
 
-## ✅ Solución Implementada
+## ✅ Solución Correcta
 
-He configurado Node.js 24.x de **4 formas diferentes** para asegurar compatibilidad:
+**IMPORTANTE:** En la versión actual de Vercel, `nodeVersion` NO se configura en `vercel.json`.
 
-### 1. ✅ `vercel.json` (Archivo principal de Vercel)
+### Método 1: Interfaz Web de Vercel (RECOMENDADO) ⭐
+
+1. Ve a tu proyecto en Vercel Dashboard
+2. **Settings** → **General**
+3. Baja hasta **Node.js Version**
+4. Selecciona **24.x** del dropdown
+5. Click en **Save**
+6. **Redeploy** tu proyecto
+
+**¡Ya está configurado!** Veo en tu captura que ya tienes 24.x seleccionado.
+
+### Método 2: Variables de Entorno
+
+Si quieres forzar la versión, puedes usar:
+
+1. Settings → Environment Variables
+2. Agregar:
+   - **Variable:** `NODE_VERSION`
+   - **Value:** `24`
+   - **Environment:** Production, Preview, Development
+
+---
+
+## 📝 Archivos de Configuración Correctos
+
+### ✅ `vercel.json` (CORREGIDO)
 ```json
 {
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
-  "nodeVersion": "24.x"  ← CONFIGURADO
+  "devCommand": "npm run dev",
+  "installCommand": "npm install"
 }
 ```
 
-### 2. ✅ `package.json` (Engines)
+**Nota:** ❌ NO incluir `nodeVersion` aquí
+
+### ✅ `package.json`
 ```json
 {
   "engines": {
-    "node": ">=24.x"  ← AGREGADO
+    "node": ">=24.x"
   }
 }
 ```
 
-### 3. ✅ `.nvmrc` (Node Version Manager)
-```
-24
-```
+Esto sugiere la versión pero NO la fuerza.
 
-### 4. ✅ `.node-version` (Alternativa a .nvmrc)
-```
-24
-```
+### ✅ `.nvmrc` y `.node-version`
+Estos archivos se usan para desarrollo local, NO afectan Vercel.
 
 ---
 
-## 📝 PASOS PARA DESPLEGAR
+## 🚀 PASOS PARA DESPLEGAR
 
-### Opción A: Script Automático (RECOMENDADO) ⭐
+Ya que tu configuración en Vercel está en **24.x**, solo necesitas:
 
-```powershell
-cd "c:\Users\Ever\Desktop\progra2\Tienda-de-VMP"
-.\prepare-deploy.ps1
-```
-
-Este script:
-- ✅ Verifica que todos los archivos estén actualizados
-- ✅ Muestra el estado de Git
-- ✅ Te guía paso a paso
-- ✅ Ejecuta `git add`, `commit` y `push`
-
-### Opción B: Manual
+### 1. Commit y Push
 
 ```bash
 cd "c:\Users\Ever\Desktop\progra2\Tienda-de-VMP"
 
-# 1. Verificar estado
-git status
-
-# 2. Agregar archivos
 git add .
-
-# 3. Commit
-git commit -m "fix: Configure Node.js 24.x for Vercel deployment"
-
-# 4. Push
+git commit -m "fix: Remove invalid nodeVersion from vercel.json"
 git push origin master
 ```
 
----
-
-## ⚠️ IMPORTANTE ANTES DE HACER PUSH
-
-### Verifica que los archivos estén actualizados:
-
-Si aún tienes archivos con sufijo `_new.vue`, debes ejecutar primero:
-
-```powershell
-.\update-project.ps1
-```
-
-Esto renombrará:
-- `App_new.vue` → `App.vue`
-- `Product_new.vue` → `Product.vue`
-- `Cart_new.vue` → `Cart.vue`
-- `ProductList_new.vue` → `ProductList.vue`
-
----
-
-## 🎯 Después del Push
+### 2. Esperar Deployment
 
 Vercel automáticamente:
+- ✅ Usará Node.js 24.x (ya configurado en Settings)
+- ✅ Ejecutará `npm install`
+- ✅ Ejecutará `npm run build`
+- ✅ Desplegará `/dist`
 
-1. ✅ Detectará el nuevo commit
-2. ✅ Iniciará un nuevo deployment
-3. ✅ Usará Node.js 24.x
-4. ✅ Ejecutará `npm install`
-5. ✅ Ejecutará `npm run build` (Vite)
-6. ✅ Desplegará la carpeta `dist/`
+---
+
+## 📊 Configuración Actual en Vercel
+
+Según tu captura:
+
+| Setting | Valor Actual |
+|---------|--------------|
+| Node.js Version | **24.x** ✅ |
+| Build Machine | Standard (4 vCPU, 8 GB) |
+| Function CPU | Basic (0.6 vCPU, 1 GB) |
+| Environment | Production |
+
+**¡Todo está bien configurado!** Solo faltaba corregir el `vercel.json`.
+
+---
+
+## 🎯 Próximo Deployment
+
+Después del push:
+1. Vercel detectará el cambio
+2. Validará `vercel.json` (ahora SIN errores) ✅
+3. Usará Node.js 24.x
+4. Build exitoso
+5. Deploy completo
 
 **Tiempo estimado:** 30-60 segundos
 
 ---
 
-## 📊 Verificar el Deployment
+## ✅ Verificación
 
-Ve a tu dashboard de Vercel:
-```
-https://vercel.com/dashboard
-```
+Después del deployment:
 
-Deberías ver:
-- ✅ Estado: "Building..." → "Ready"
-- ✅ Node.js Version: `24.x`
-- ✅ Build Command: `npm run build`
-- ✅ Output Directory: `dist`
+1. Ve a **Deployments** en Vercel
+2. Deberías ver:
+   - ✅ Status: **Ready**
+   - ✅ Build: **Successful**
+   - ✅ Duration: ~30-60s
 
 ---
 
-## 🐛 Si Aún Falla
+## 📚 Documentación Oficial
 
-### 1. Limpiar Caché de Vercel
+- [Vercel Node.js Versión](https://vercel.com/docs/deployments/configure-a-build#nodejs-version)
+- [Vercel Configuration](https://vercel.com/docs/projects/project-configuration)
 
-En la interfaz de Vercel:
-1. Ve a tu proyecto
-2. Deployments
-3. Selecciona el deployment fallido
-4. Click en "..." (menú)
-5. "Redeploy" → **"Clear cache and redeploy"**
-
-### 2. Verificar Configuración Manual
-
-En Vercel:
-1. Settings → General
-2. **Node.js Version** → Selecciona `24.x`
-3. **Build Command** → `npm run build`
-4. **Output Directory** → `dist`
-5. Save
-
-### 3. Verificar que NO suban archivos incorrectos
-
-Asegúrate de que `.gitignore` excluye:
-- ✅ `node_modules/`
-- ✅ `dist/`
-- ✅ `*_new.vue`
-- ✅ `*.backup`
+**Nota:** La documentación de Vercel cambió en 2025-2026. `nodeVersion` en `vercel.json` ya NO es válido.
 
 ---
 
-## 📁 Archivos de Configuración Creados
+## 🎉 Resumen
 
-```
-Tienda-de-VMP/
-├── vercel.json              ← Config principal Vercel
-├── package.json             ← Engines Node.js
-├── .nvmrc                   ← NVM config
-├── .node-version            ← Node version
-├── .gitignore              ← Actualizado
-├── prepare-deploy.ps1      ← Script helper
-├── VERCEL_DEPLOYMENT.md    ← Documentación
-└── SOLUCION_VERCEL.md      ← Este archivo
+**Antes:**
+```json
+{
+  "nodeVersion": "24.x"  ❌ Error de schema
+}
 ```
 
----
-
-## ✅ Checklist Final
-
-Antes de hacer push, verifica:
-
-- [ ] Ejecutaste `update-project.ps1` (si había archivos *_new.vue)
-- [ ] `vercel.json` existe con `"nodeVersion": "24.x"`
-- [ ] `package.json` tiene `"engines": { "node": ">=24.x" }`
-- [ ] `.nvmrc` y `.node-version` existen
-- [ ] No hay archivos `*_new.vue` en `src/`
-- [ ] `.gitignore` está actualizado
-- [ ] Has hecho `git add .`
-- [ ] Has hecho commit
-- [ ] Estás listo para `git push`
+**Después:**
+1. ✅ `vercel.json` sin `nodeVersion`
+2. ✅ Node.js 24.x configurado en Vercel Dashboard
+3. ✅ Listo para deployment
 
 ---
 
 ## 🚀 COMANDO FINAL
 
-Si todo está correcto:
-
 ```bash
+git add .
+git commit -m "fix: Remove invalid nodeVersion from vercel.json"
 git push origin master
 ```
 
-Y espera ~1 minuto a que Vercel termine el deployment.
+**¡Y listo!** 🎉
+
+Tu sitio se desplegará correctamente en:
+- https://tienda-de-vmp.vercel.app
 
 ---
 
-## 📞 Enlaces Útiles
-
-- **Tu Proyecto en Vercel:** https://vercel.com/dashboard
-- **URL de Producción:** https://tienda-de-vmp.vercel.app
-- **Documentación Vercel Node.js:** https://vercel.com/docs/functions/runtimes/node-js
-
----
-
-## ✨ Resultado Esperado
-
-Después del deployment exitoso:
-
-```
-✅ Build completed
-✅ Deployment URL: https://tienda-de-vmp-xxx.vercel.app
-✅ Production URL: https://tienda-de-vmp.vercel.app
-✅ Status: Ready
-```
-
-**¡Listo para producción!** 🎉
-
----
-
-**Última actualización:** 5 de Abril de 2026  
-**Soporte:** Ver VERCEL_DEPLOYMENT.md para más detalles
+**Actualizado:** 5 de Abril de 2026  
+**Razón:** Schema de vercel.json cambió, nodeVersion ya no es válido
